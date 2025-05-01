@@ -57,6 +57,11 @@ class CarnationGameAutoClicker:
         # PyAutoGUI 설정
         pyautogui.PAUSE = 0
         pyautogui.FAILSAFE = False
+        
+        # 클릭 쿨다운 설정
+        self.cooldown_time = 0.2  
+        self.cell_cooldowns = {}  # 각 셀의 쿨다운 시간 저장
+        self.cooldown_lock = threading.Lock()
     
     def is_brown_fast(self, r, g, b):
         rgb_key = (r, g, b)
@@ -138,16 +143,39 @@ class CarnationGameAutoClicker:
         except:
             return False
     
+    def is_cell_in_cooldown(self, index):
+        """셀이 쿨다운 상태인지 확인합니다."""
+        with self.cooldown_lock:
+            if index in self.cell_cooldowns:
+                if time.time() < self.cell_cooldowns[index]:
+                    return True
+                # 쿨다운이 끝났으면 제거
+                else:
+                    del self.cell_cooldowns[index]
+            return False
+    
+    def set_cell_cooldown(self, index):
+        """셀에 쿨다운을 설정합니다."""
+        with self.cooldown_lock:
+            self.cell_cooldowns[index] = time.time() + self.cooldown_time
+    
     def click_point(self, x, y, point_index):
         pyautogui.click(x, y, duration=self.click_duration)
         with self.click_lock:
             self.click_count += 1
+        # 쿨다운 설정
+        self.set_cell_cooldown(point_index)
         print(f"{point_index}번째 셀에서 카네이션 발견!")
         return True
     
     def check_and_click_point(self, point, screenshot):
         center = point['center']
         index = point['index']
+        
+        # 쿨다운 중인 셀은 건너뜁니다
+        if self.is_cell_in_cooldown(index):
+            return False
+            
         rel_x = center[0] - self.game_area[0]
         rel_y = center[1] - self.game_area[1]
         
@@ -194,7 +222,7 @@ class CarnationGameAutoClicker:
         
         # 소요 시간 계산 및 출력
         elapsed_time = time.time() - start_time
-        print(f"종료 됐습니다. 소요시간: {elapsed_time:.2f}초")
+        print(f"종료 됐습니다. 소요시간: {elapsed_time:.2f}초, 총 클릭: {self.click_count}회")
 
 
 def main():
