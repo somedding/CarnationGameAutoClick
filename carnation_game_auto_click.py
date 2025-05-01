@@ -57,10 +57,10 @@ class CarnationGameAutoClicker:
         self.debug_end_time = time.time() + 10
         
         # 클릭 설정
-        self.click_duration = 0.0001  # 0.001초 동안 마우스 버튼을 누르고 있음
+        self.click_duration = 0.001  # 0.001초 동안 마우스 버튼을 누르고 있음
         
         # pyautogui 설정 최적화
-        pyautogui.PAUSE = 0.0001  # 클릭 사이의 대기 시간 최소화
+        pyautogui.PAUSE = 0  # 클릭 사이의 대기 시간 최소화
         pyautogui.FAILSAFE = False  # 안전 장치 비활성화 (주의: 필요시에만 사용)
         
         # 클릭 카운터와 락
