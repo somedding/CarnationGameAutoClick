@@ -165,13 +165,8 @@ class CarnationGameAutoClicker:
     
     def click_point(self, x, y, point_index):
         try:
-            # 더 빠른 클릭 위해 duration 최소화
             pyautogui.click(x=x, y=y, duration=self.click_duration)
-            
-            # 클릭 통계 업데이트
             self.click_count += 1
-            
-            # 쿨다운 설정
             self.set_cell_cooldown(point_index)
             print(f"{point_index}번째 셀에서 카네이션 발견! [O]")
             return True
@@ -231,7 +226,6 @@ class CarnationGameAutoClicker:
         try:
             while time.time() - start_time < duration:
                 self.check_fixed_points_for_carnations()
-                # 최소 지연으로 CPU 사용률 조절
                 time.sleep(self.scan_interval)
                 
         except KeyboardInterrupt:
