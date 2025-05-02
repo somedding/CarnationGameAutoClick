@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from collections import deque
 
 class CarnationGameAutoClicker:
-    def __init__(self, scan_interval=0.00001):  
+    def __init__(self, scan_interval=0.000001):  
         self.game_area = (25, 434, 379, 995)  # (x1, y1, x2, y2)
         
         # 고정 좌표값 설정
@@ -46,7 +46,7 @@ class CarnationGameAutoClicker:
         self.cache_queue = deque()
         
         # 클릭 설정
-        self.click_duration = 0.0001  
+        self.click_duration = 0.0003 #클릭 지속시간  
         self.click_count = 0
         self.click_lock = threading.Lock()
         
@@ -63,8 +63,7 @@ class CarnationGameAutoClicker:
         self.cooldown_lock = threading.Lock()
         
         # 성능 최적화 설정
-        self.scan_interval = scan_interval  
-        print(f"스캔 간격: {self.scan_interval:.8f}초")
+        self.scan_interval = scan_interval
     
     def is_brown_fast(self, r, g, b):
         rgb_key = (r, g, b)
